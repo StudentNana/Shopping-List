@@ -31,10 +31,14 @@ class ShoppingItem: Equatable, Hashable {
 }
 
 class ShoppingList {
-    var entityId: Int
+    var entityId: Int = 0
     var name: String
     var items = Set<ShoppingItem>()
     
+    init(name: String) {
+        self.name = name;
+    }
+
     init(entityId: Int, name: String) {
         self.entityId = entityId;
         self.name = name;
@@ -51,9 +55,9 @@ class ShoppingList {
 }
 
 protocol ShoppingListDAO {
-    func getLists() -> [ShoppingList]
-    func addList(list: ShoppingList)
-    func removeList(listId: Int)
+    func getLists() throws -> [ShoppingList]
+    func addList(list: ShoppingList) throws
+    func removeList(listId: Int) throws
     func getListById(id: Int) throws -> ShoppingList
     func addItemToList(listId: Int, item: ShoppingItem) throws
     func removeItemFromList(listId: Int, itemId: Int) throws
@@ -96,19 +100,21 @@ class SimpleShoppingListDAO: ShoppingListDAO {
         throw "List with id \(id) not found"
     }
 
-    internal func removeList(listId: Int) {
-        
+    internal func removeList(listId: Int) throws {
+        // TODO
     }
 
-    internal func getLists() -> [ShoppingList] {
+    internal func getLists() throws -> [ShoppingList] {
         return lists
     }
 
-    internal func addList(list: ShoppingList) {
+    internal func addList(list: ShoppingList) throws {
         if (!listExists(listName: list.name)) {
             list.entityId = listsIdCounter
             listsIdCounter += 1
             lists.append(list)
+        } else {
+            throw "List with name \(list.name) already exists"
         }
     }
     
