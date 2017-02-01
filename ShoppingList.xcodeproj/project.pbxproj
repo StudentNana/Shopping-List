@@ -14,6 +14,7 @@
 		396AE8CC1E42529E004ED6C3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 396AE8CA1E42529E004ED6C3 /* LaunchScreen.storyboard */; };
 		396AE8D71E42529F004ED6C3 /* ShoppingListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396AE8D61E42529F004ED6C3 /* ShoppingListTests.swift */; };
 		396AE8E21E42529F004ED6C3 /* ShoppingListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396AE8E11E42529F004ED6C3 /* ShoppingListUITests.swift */; };
+		595C335C1E429CFE00F11EEA /* ShoppingListBasic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595C335B1E429CFE00F11EEA /* ShoppingListBasic.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		396AE8DD1E42529F004ED6C3 /* ShoppingListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppingListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		396AE8E11E42529F004ED6C3 /* ShoppingListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListUITests.swift; sourceTree = "<group>"; };
 		396AE8E31E42529F004ED6C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		595C335B1E429CFE00F11EEA /* ShoppingListBasic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListBasic.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		396AE8C01E42529E004ED6C3 /* ShoppingList */ = {
 			isa = PBXGroup;
 			children = (
+				595C335B1E429CFE00F11EEA /* ShoppingListBasic.swift */,
 				396AE8C11E42529E004ED6C3 /* AppDelegate.swift */,
 				396AE8C31E42529E004ED6C3 /* ViewController.swift */,
 				396AE8C51E42529E004ED6C3 /* Main.storyboard */,
@@ -259,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				595C335C1E429CFE00F11EEA /* ShoppingListBasic.swift in Sources */,
 				396AE8C41E42529E004ED6C3 /* ViewController.swift in Sources */,
 				396AE8C21E42529E004ED6C3 /* AppDelegate.swift in Sources */,
 			);
@@ -505,6 +509,7 @@
 				396AE8E81E42529F004ED6C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		396AE8E91E42529F004ED6C3 /* Build configuration list for PBXNativeTarget "ShoppingListTests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +518,7 @@
 				396AE8EB1E42529F004ED6C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		396AE8EC1E42529F004ED6C3 /* Build configuration list for PBXNativeTarget "ShoppingListUITests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +527,7 @@
 				396AE8EE1E42529F004ED6C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

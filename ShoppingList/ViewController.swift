@@ -50,5 +50,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Dispose of any resources that can be recreated.
     }
     
+    func example() {
+        do {
+            let dao: ShoppingListDAO  = SimpleShoppingListDAO()
+            let list1 = ShoppingList(entityId: 0, name: "List 1")
+            let item1 = ShoppingItem(entityId: 0, description: "Item 1")
+            dao.addList(list: list1)
+            try dao.addItemToList(listId: 0, item: item1)
+            dao.addList(list: list1);
+            let list2 = ShoppingList(entityId: 0, name: "List 2")
+            dao.addList(list: list2)
+            let item2 = ShoppingItem(entityId: 0, description: "Item 2")
+            let item3 = ShoppingItem(entityId: 0, description: "Item 3")
+            try dao.addItemToList(listId: 1, item: item2)
+            try dao.addItemToList(listId: 1, item: item3)
+            print("done")
+        } catch {
+            print(error)
+        }
+    }
     
 }
