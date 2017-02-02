@@ -3,38 +3,44 @@
 //  ShoppingList
 //
 //  Created by Anton Kusch on 31/01/17.
-//  Copyright © 2017 AG. All rights reserved.
+//  Copyright © 2017 Anton Kusch. All rights reserved.
 //
 
 import Foundation
+import EVReflection
 
 
-class ShoppingItem: Equatable, Hashable {
-    var entityId: Int
-    var description: String
+class ShoppingItem: EVObject {
+    var entityId: Int = 0
+    var name: String = ""
     var bought: Bool = false
     
-    init(entityId: Int, description: String) {
+    required init() {}
+
+    init(entityId: Int, name: String) {
         self.entityId = entityId
-        self.description = description
+        self.name = name
     }
     
-    var hashValue: Int {
+    override var hashValue: Int {
         get {
-            return entityId.hashValue << 15 + description.hashValue
+            return entityId.hashValue << 15 + name.hashValue
         }
     }
     
     static func ==(lhs: ShoppingItem, rhs: ShoppingItem) -> Bool {
-        return lhs.entityId == rhs.entityId && lhs.description == rhs.description
+        return lhs.entityId == rhs.entityId && lhs.name == rhs.name
     }
 }
 
-class ShoppingList {
+class ShoppingList: EVObject {
+
     var entityId: Int = 0
-    var name: String
-    var items = Set<ShoppingItem>()
+    var name: String = ""
+    var items = [ShoppingItem]()
     
+    required init() {}
+
     init(name: String) {
         self.name = name;
     }
@@ -54,91 +60,4 @@ class ShoppingList {
     }
 }
 
-protocol ShoppingListDAO {
-    func getLists() throws -> [ShoppingList]
-    func addList(list: ShoppingList) throws
-    func removeList(listId: Int) throws
-    func getListById(id: Int) throws -> ShoppingList
-    func addItemToList(listId: Int, item: ShoppingItem) throws
-    func removeItemFromList(listId: Int, itemId: Int) throws
-    func setBoughtToItemFromList(listId: Int, itemId: Int) throws
-}
-
 extension String: Error {}
-
-class SimpleShoppingListDAO: ShoppingListDAO {
-    
-    var lists = [ShoppingList]()
-    var listsIdCounter: Int = 0
-    var itemsIdCounter: Int = 0
-    let timeout: UInt32 = 1
-    
-    internal func setBoughtToItemFromList(listId: Int, itemId: Int) throws {
-        sleep(timeout)
-        let list = try getListById(id: listId)
-        let item = try list.getItemById(itemId: itemId)
-        item.bought = true
-    }
-
-    internal func removeItemFromList(listId: Int, itemId: Int) throws {
-        sleep(timeout)
-        let list = try getListById(id: listId)
-        let item = try list.getItemById(itemId: itemId)
-        list.items.remove(item)
-    }
-
-    internal func addItemToList(listId: Int, item: ShoppingItem) throws {
-        sleep(timeout)
-        let list = try getListById(id: listId)
-        item.entityId = itemsIdCounter
-        itemsIdCounter += 1
-        list.items.insert(item)
-    }
-
-    internal func getListById(id: Int) throws -> ShoppingList {
-        sleep(timeout)
-        for list in lists {
-            if (list.entityId == id) {
-                return list
-            }
-        }
-        throw "List with id \(id) not found"
-    }
-
-    internal func removeList(listId: Int) throws {
-        sleep(timeout)
-        for (index, list) in lists.enumerated() {
-            if (list.entityId == listId) {
-                lists.remove(at: index)
-                return
-            }
-        }
-        throw "List with id \(listId) not found"
-    }
-
-    internal func getLists() throws -> [ShoppingList] {
-        sleep(timeout)
-        return lists
-    }
-
-    internal func addList(list: ShoppingList) throws {
-        sleep(timeout)
-        if (!listExists(listName: list.name)) {
-            list.entityId = listsIdCounter
-            listsIdCounter += 1
-            lists.append(list)
-        } else {
-            throw "List with name \(list.name) already exists"
-        }
-    }
-    
-    func listExists(listName: String) -> Bool {
-        for list in lists {
-            if (list.name == listName) {
-                return true
-            }
-        }
-        return false
-    }
-}
-

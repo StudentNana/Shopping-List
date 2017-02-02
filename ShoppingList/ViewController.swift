@@ -10,31 +10,48 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
 
-    let dao: ShoppingListDAO  = SimpleShoppingListDAO()
+    let base_url = "http://localhost:8080/shopping/"
 
     @IBOutlet var textFieldNewList: UITextField!
     var tableView: UITableView  =   UITableView()
     var lists = [ShoppingList]()
-//    var items: [String] = ["Kaisers", "Lidl", "Rossmann", "Kaisers", "Lidl", "Rossmann", "Kaisers", "Lidl", "Rossmann","Kaisers", "Lidl", "Rossmann", "Kaisers", "Lidl", "Rossmann", "Kaisers", "Lidl", "Rossmann"]
 
     @IBAction func btnAddList(_ sender: AnyObject) {
         print("add List")
         if (textFieldNewList.text != "") {
             let list = ShoppingList(name: textFieldNewList.text!)
-            LoadingOverlay.shared.showOverlay(view: self.view)
-            do {
-                try dao.addList(list: list)
-                print("overlay")
-                LoadingOverlay.shared.hideOverlayView()
-            } catch {
-                print(error)
-                let alert = UIAlertController(title: "Error", message: "List with this name already exists", preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "ok", style: UIAlertActionStyle.default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-                // show error in popup
+            
+            let url = URL(string: base_url + "list")
+            var request: URLRequest = URLRequest(url: url!)
+            request.httpMethod = "POST"
+            request.httpBody = list.toJsonData()
+            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                
+                guard let data = data, error == nil else {
+                    return // TODO show error message
+                }
+                
+                let httpResponse = response as? HTTPURLResponse
+                
+                print("Data:\(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)")
+                
+                if (httpResponse?.statusCode == 201) {
+                    DispatchQueue.main.async{
+                        LoadingOverlay.shared.hideOverlayView()
+                        self.refreshTable()
+                    }
+                } else {
+                    DispatchQueue.main.async{
+                        LoadingOverlay.shared.hideOverlayView()
+                        // TODO show error
+                    }
+                }
             }
+            
+            task.resume()
             textFieldNewList.text = ""
-            refreshTable()
         }
     }
     
@@ -48,6 +65,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableView.separatorStyle = .none
         self.view.addSubview(tableView)
+        refreshTable()
         // Scroll
 //        let numberOfSections = self.tableView.numberOfSections
 //        let numberOfRows = self.tableView.numberOfRows(inSection: numberOfSections-1)
@@ -76,13 +94,36 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @objc(tableView:commitEditingStyle:forRowAtIndexPath:) func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let list = lists[indexPath.row]
-            do {
-                try dao.removeList(listId: list.entityId)
-                refreshTable()
-            } catch{
-                print(error)
-                // show error in popup
+            
+            let url = URL(string: base_url + "list/\(list.entityId)")
+            var request: URLRequest = URLRequest(url: url!)
+            request.httpMethod = "DELETE"
+            
+            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
+                
+                guard let data = data, error == nil else {
+                    return // TODO show error message
+                }
+                
+                let httpResponse = response as? HTTPURLResponse
+                
+                print("Data:\(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)")
+                
+                if (httpResponse?.statusCode == 200) {
+                    DispatchQueue.main.async{
+                        LoadingOverlay.shared.hideOverlayView()
+                        self.refreshTable()
+                    }
+                } else {
+                    DispatchQueue.main.async{
+                        LoadingOverlay.shared.hideOverlayView()
+                        // TODO show error
+                    }
+                }
             }
+            
+            task.resume()
+            
         }
     }
     // selected list
@@ -95,39 +136,45 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Dispose of any resources that can be recreated.
     }
     func refreshTable() {
-        do {
-            try lists = dao.getLists()
-        } catch {
-            print(error)
-            // show error in popup
-        }
-        DispatchQueue.main.async{
-            self.tableView.reloadData()
-        }
-    }
 
-    func example() {
-        do {
-            let dao: ShoppingListDAO  = SimpleShoppingListDAO()
-            let list1 = ShoppingList(entityId: 0, name: "List 1")
-            let item1 = ShoppingItem(entityId: 0, description: "Item 1")
-            try dao.addList(list: list1)
-            try dao.addItemToList(listId: 0, item: item1)
-            try dao.addList(list: list1);
-            let list2 = ShoppingList(entityId: 0, name: "List 2")
-            try dao.addList(list: list2)
-            let item2 = ShoppingItem(entityId: 0, description: "Item 2")
-            let item3 = ShoppingItem(entityId: 0, description: "Item 3")
-            try dao.addItemToList(listId: 1, item: item2)
-            try dao.addItemToList(listId: 1, item: item3)
-            print("done")
-        } catch {
-            print(error)
+        let url = URL(string: base_url + "list")
+            
+        let task = URLSession.shared.dataTask(with: url! as URL) { data, response, error in
+                
+            guard let data = data, error == nil else {
+                return // TODO show error message
+            }
+            
+            let httpResponse = response as? HTTPURLResponse
+            
+            //print("Data:\(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)")
+            
+            if (httpResponse?.statusCode == 200) {
+                let json: String = NSString(data: data, encoding: String.Encoding.utf8.rawValue)! as String
+                print("json:\(json)")
+                self.lists = [ShoppingList](json:json as String)
+                
+                DispatchQueue.main.async{
+                    LoadingOverlay.shared.hideOverlayView()
+                    self.tableView.reloadData()
+                }
+            } else {
+                DispatchQueue.main.async{
+                    LoadingOverlay.shared.hideOverlayView()
+                    // TODO show error
+                }
+            }
         }
+        
+        LoadingOverlay.shared.showOverlay(view: self.view)
+        
+        task.resume()
+            
+        print("Done!!!")
     }
 }
 
-public class LoadingOverlay{
+public class LoadingOverlay {
     
     var overlayView = UIView()
     var activityIndicator = UIActivityIndicatorView()
@@ -142,7 +189,7 @@ public class LoadingOverlay{
     public func showOverlay(view: UIView) {
         overlayView.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
         overlayView.center = view.center
-        overlayView.backgroundColor = UIColor(colorLiteralRed: 204.0, green: 0.0, blue: 0.0, alpha: 0.9)
+        overlayView.backgroundColor = UIColor.black
         overlayView.clipsToBounds = true
         overlayView.layer.cornerRadius = 10
         activityIndicator.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
