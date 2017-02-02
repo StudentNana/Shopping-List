@@ -71,20 +71,24 @@ class SimpleShoppingListDAO: ShoppingListDAO {
     var lists = [ShoppingList]()
     var listsIdCounter: Int = 0
     var itemsIdCounter: Int = 0
+    let timeout: UInt32 = 1
     
     internal func setBoughtToItemFromList(listId: Int, itemId: Int) throws {
+        sleep(timeout)
         let list = try getListById(id: listId)
         let item = try list.getItemById(itemId: itemId)
         item.bought = true
     }
 
     internal func removeItemFromList(listId: Int, itemId: Int) throws {
+        sleep(timeout)
         let list = try getListById(id: listId)
         let item = try list.getItemById(itemId: itemId)
         list.items.remove(item)
     }
 
     internal func addItemToList(listId: Int, item: ShoppingItem) throws {
+        sleep(timeout)
         let list = try getListById(id: listId)
         item.entityId = itemsIdCounter
         itemsIdCounter += 1
@@ -92,6 +96,7 @@ class SimpleShoppingListDAO: ShoppingListDAO {
     }
 
     internal func getListById(id: Int) throws -> ShoppingList {
+        sleep(timeout)
         for list in lists {
             if (list.entityId == id) {
                 return list
@@ -101,14 +106,23 @@ class SimpleShoppingListDAO: ShoppingListDAO {
     }
 
     internal func removeList(listId: Int) throws {
-        // TODO
+        sleep(timeout)
+        for (index, list) in lists.enumerated() {
+            if (list.entityId == listId) {
+                lists.remove(at: index)
+                return
+            }
+        }
+        throw "List with id \(listId) not found"
     }
 
     internal func getLists() throws -> [ShoppingList] {
+        sleep(timeout)
         return lists
     }
 
     internal func addList(list: ShoppingList) throws {
+        sleep(timeout)
         if (!listExists(listName: list.name)) {
             list.entityId = listsIdCounter
             listsIdCounter += 1
