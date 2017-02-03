@@ -2,8 +2,8 @@
 //  ShoppingListBasic.swift
 //  ShoppingList
 //
-//  Created by Anton Kusch on 31/01/17.
-//  Copyright © 2017 Anton Kusch. All rights reserved.
+//  Created by Sagitova Gulnaz on 31/01/17.
+//  Copyright © 2017 Sagitova Gulnaz. All rights reserved.
 //
 
 import Foundation

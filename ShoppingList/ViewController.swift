@@ -15,7 +15,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet var textFieldNewList: UITextField!
     var tableView: UITableView  =   UITableView()
     var lists = [ShoppingList]()
-
+    
+    var refreshControl = UIRefreshControl()
+    
     @IBAction func btnAddList(_ sender: AnyObject) {
         print("add List")
         if (textFieldNewList.text != "") {
@@ -58,7 +60,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.frame         =   CGRect(x: 5, y: 70, width: 360, height: 700)
         tableView.delegate      =   self
         tableView.dataSource    =   self
@@ -66,12 +68,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.tableView.separatorStyle = .none
         self.view.addSubview(tableView)
         refreshTable()
+        
+//        var refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "refreshtable:", for: UIControlEvents.valueChanged)
+        tableView.addSubview(refreshControl)
+        
+        
+    }
+    
         // Scroll
 //        let numberOfSections = self.tableView.numberOfSections
 //        let numberOfRows = self.tableView.numberOfRows(inSection: numberOfSections-1)
 //        let indexPath = IndexPath(row: numberOfRows-1 , section: numberOfSections-1)
 //        self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
-    }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(lists.count)
@@ -85,11 +95,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.textLabel?.transform = CGAffineTransform(scaleX: -1,y: 1);
         cell.textLabel?.text = lists[indexPath.row].name
         cell.imageView?.image = UIImage(named: "arrow")
-        cell.tag = lists[indexPath.row].entityId
-        print("cell \(cell.tag)")
 
+        cell.tag = lists[indexPath.row].entityId
+        
+//        cell.imageView?.isUserInteractionEnabled = true
+//        cell.imageView?.tag = lists[indexPath.row].entityId
+        
         return cell
     }
+    
     // delete list
     @objc(tableView:commitEditingStyle:forRowAtIndexPath:) func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
@@ -128,15 +142,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     // selected list
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
-        print("selected")
+        //print("selected")
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     func refreshTable() {
-
+        print("refresh")
         let url = URL(string: base_url + "list")
             
         let task = URLSession.shared.dataTask(with: url! as URL) { data, response, error in
@@ -172,6 +187,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         print("Done!!!")
     }
+    
 }
 
 public class LoadingOverlay {
@@ -189,7 +205,7 @@ public class LoadingOverlay {
     public func showOverlay(view: UIView) {
         overlayView.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
         overlayView.center = view.center
-        overlayView.backgroundColor = UIColor.black
+        overlayView.backgroundColor = UIColor.blue
         overlayView.clipsToBounds = true
         overlayView.layer.cornerRadius = 10
         activityIndicator.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
