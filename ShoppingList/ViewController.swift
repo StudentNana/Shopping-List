@@ -16,8 +16,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var tableView: UITableView  =   UITableView()
     var lists = [ShoppingList]()
     
-    var refreshControl = UIRefreshControl()
-    
     @IBAction func btnAddList(_ sender: AnyObject) {
         print("add List")
         if (textFieldNewList.text != "") {
@@ -69,13 +67,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.view.addSubview(tableView)
         refreshTable()
         
-//        var refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "refreshtable:", for: UIControlEvents.valueChanged)
-        tableView.addSubview(refreshControl)
+        var refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: Selector("sortArray"), forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl = refreshControl
         
         
     }
-    
+    func sortArray() {
+        print("refreshing")
+    }
         // Scroll
 //        let numberOfSections = self.tableView.numberOfSections
 //        let numberOfRows = self.tableView.numberOfRows(inSection: numberOfSections-1)
