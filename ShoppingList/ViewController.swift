@@ -8,12 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let base_url = "http://localhost:8080/shopping/"
-
+    static let base_url = "http://localhost:8080/shopping/"
+    
+    @IBOutlet var tableView: UITableView!
     @IBOutlet var textFieldNewList: UITextField!
-    var tableView: UITableView  =   UITableView()
     var lists = [ShoppingList]()
     
     @IBAction func btnAddList(_ sender: AnyObject) {
@@ -21,7 +21,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if (textFieldNewList.text != "") {
             let list = ShoppingList(name: textFieldNewList.text!)
             
-            let url = URL(string: base_url + "list")
+            let url = URL(string: ViewController.base_url + "list")
             var request: URLRequest = URLRequest(url: url!)
             request.httpMethod = "POST"
             request.httpBody = list.toJsonData()
@@ -45,7 +45,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 } else {
                     DispatchQueue.main.async{
                         LoadingOverlay.shared.hideOverlayView()
-                        // TODO show error
+                        self.showDefaultError()
                     }
                 }
             }
@@ -55,33 +55,35 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    func showDefaultError() {
+        showError(title: "Error", message: "Ooops! Something wrong", buttonTitle: "Ok")
+    }
+    
+    func showError(title: String, message: String, buttonTitle: String) {
+        let alert = UIAlertView()
+        alert.title = title
+        alert.message = message
+        alert.addButton(withTitle: buttonTitle)
+        alert.show()
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.frame         =   CGRect(x: 5, y: 70, width: 360, height: 700)
-        tableView.delegate      =   self
-        tableView.dataSource    =   self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableView.separatorStyle = .none
-        self.view.addSubview(tableView)
         refreshTable()
         
-        var refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: Selector("sortArray"), forControlEvents: UIControlEvents.ValueChanged)
-        refreshControl = refreshControl
-        
-        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(ViewController.refresh), for: UIControlEvents.valueChanged)
+        tableView.refreshControl = refreshControl
     }
-    func sortArray() {
-        print("refreshing")
-    }
-        // Scroll
-//        let numberOfSections = self.tableView.numberOfSections
-//        let numberOfRows = self.tableView.numberOfRows(inSection: numberOfSections-1)
-//        let indexPath = IndexPath(row: numberOfRows-1 , section: numberOfSections-1)
-//        self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
     
+    func refresh() {
+        if (tableView.refreshControl?.isRefreshing)! {
+            tableView.refreshControl?.endRefreshing()
+        }
+        refreshTable()
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(lists.count)
@@ -89,27 +91,38 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ cellForRowAttableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell")! as UITableViewCell
-        cell.contentView.transform = CGAffineTransform(scaleX: -1,y: 1);
-        cell.imageView?.transform = CGAffineTransform(scaleX: -1,y: 1);
-        cell.textLabel?.transform = CGAffineTransform(scaleX: -1,y: 1);
-        cell.textLabel?.text = lists[indexPath.row].name
-        cell.imageView?.image = UIImage(named: "arrow")
-
-        cell.tag = lists[indexPath.row].entityId
-        
-//        cell.imageView?.isUserInteractionEnabled = true
-//        cell.imageView?.tag = lists[indexPath.row].entityId
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! TableViewCell
+        cell.titleLabel.text = self.lists[indexPath.row].name
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: "showItems", sender: self)
+        print("here0")
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("here1")
+        if (segue.identifier == "showItems") {
+            print("here2")
+            let upcoming: ItemsViewController = segue.destination as! ItemsViewController
+            let indexPath = self.tableView.indexPathForSelectedRow!
+            let listName = self.lists[indexPath.row].name
+            let listId = self.lists[indexPath.row].entityId
+            upcoming.listName = listName
+            upcoming.listId = listId
+            self.tableView.deselectRow(at: indexPath, animated: true)
+            print("here3")
+        }
+    }
+
     
     // delete list
     @objc(tableView:commitEditingStyle:forRowAtIndexPath:) func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let list = lists[indexPath.row]
             
-            let url = URL(string: base_url + "list/\(list.entityId)")
+            let url = URL(string: ViewController.base_url + "list/\(list.entityId)")
             var request: URLRequest = URLRequest(url: url!)
             request.httpMethod = "DELETE"
             
@@ -131,7 +144,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 } else {
                     DispatchQueue.main.async{
                         LoadingOverlay.shared.hideOverlayView()
-                        // TODO show error
+                        self.showDefaultError()
                     }
                 }
             }
@@ -139,10 +152,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             task.resume()
             
         }
-    }
-    // selected list
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
-        //print("selected")
     }
     
     override func didReceiveMemoryWarning() {
@@ -152,7 +161,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func refreshTable() {
         print("refresh")
-        let url = URL(string: base_url + "list")
+        let url = URL(string: ViewController.base_url + "list")
             
         let task = URLSession.shared.dataTask(with: url! as URL) { data, response, error in
                 
@@ -176,7 +185,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             } else {
                 DispatchQueue.main.async{
                     LoadingOverlay.shared.hideOverlayView()
-                    // TODO show error
+                    self.showDefaultError()
                 }
             }
         }

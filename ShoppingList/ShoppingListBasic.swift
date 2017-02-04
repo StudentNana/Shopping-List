@@ -17,6 +17,10 @@ class ShoppingItem: EVObject {
     
     required init() {}
 
+    init(name: String) {
+        self.name = name
+    }
+    
     init(entityId: Int, name: String) {
         self.entityId = entityId
         self.name = name

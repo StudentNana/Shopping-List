@@ -15,6 +15,9 @@
 		396AE8CC1E42529E004ED6C3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 396AE8CA1E42529E004ED6C3 /* LaunchScreen.storyboard */; };
 		396AE8D71E42529F004ED6C3 /* ShoppingListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396AE8D61E42529F004ED6C3 /* ShoppingListTests.swift */; };
 		396AE8E21E42529F004ED6C3 /* ShoppingListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396AE8E11E42529F004ED6C3 /* ShoppingListUITests.swift */; };
+		39C096891E45185F000E411A /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C096881E45185F000E411A /* TableViewCell.swift */; };
+		39C0968B1E451A6C000E411A /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C0968A1E451A6C000E411A /* ItemsViewController.swift */; };
+		39C0968D1E453AF9000E411A /* ItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C0968C1E453AF9000E411A /* ItemTableViewCell.swift */; };
 		595C335C1E429CFE00F11EEA /* ShoppingListBasic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595C335B1E429CFE00F11EEA /* ShoppingListBasic.swift */; };
 		8B3C44AE59F531BFC3EEFFBD /* Pods_ShoppingListTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4F5E764D9F8BEC5856FC5F3 /* Pods_ShoppingListTests.framework */; };
 		BB9C89E3C3786F863ECE315C /* Pods_ShoppingListUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19D57E492FD85C0EBB7A940D /* Pods_ShoppingListUITests.framework */; };
@@ -54,6 +57,9 @@
 		396AE8DD1E42529F004ED6C3 /* ShoppingListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShoppingListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		396AE8E11E42529F004ED6C3 /* ShoppingListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListUITests.swift; sourceTree = "<group>"; };
 		396AE8E31E42529F004ED6C3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		39C096881E45185F000E411A /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		39C0968A1E451A6C000E411A /* ItemsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
+		39C0968C1E453AF9000E411A /* ItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemTableViewCell.swift; sourceTree = "<group>"; };
 		4695C81DC82D56A12C85504E /* Pods-ShoppingListTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingListTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingListTests/Pods-ShoppingListTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4DE25AA45BF7BFD959A86F59 /* Pods-ShoppingListUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingListUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingListUITests/Pods-ShoppingListUITests.release.xcconfig"; sourceTree = "<group>"; };
 		595C335B1E429CFE00F11EEA /* ShoppingListBasic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListBasic.swift; sourceTree = "<group>"; };
@@ -123,6 +129,9 @@
 				396AE8C81E42529E004ED6C3 /* Assets.xcassets */,
 				396AE8CA1E42529E004ED6C3 /* LaunchScreen.storyboard */,
 				396AE8CD1E42529E004ED6C3 /* Info.plist */,
+				39C096881E45185F000E411A /* TableViewCell.swift */,
+				39C0968A1E451A6C000E411A /* ItemsViewController.swift */,
+				39C0968C1E453AF9000E411A /* ItemTableViewCell.swift */,
 			);
 			path = ShoppingList;
 			sourceTree = "<group>";
@@ -449,8 +458,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39C096891E45185F000E411A /* TableViewCell.swift in Sources */,
+				39C0968B1E451A6C000E411A /* ItemsViewController.swift in Sources */,
 				595C335C1E429CFE00F11EEA /* ShoppingListBasic.swift in Sources */,
 				396AE8C41E42529E004ED6C3 /* ViewController.swift in Sources */,
+				39C0968D1E453AF9000E411A /* ItemTableViewCell.swift in Sources */,
 				396AE8C21E42529E004ED6C3 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
